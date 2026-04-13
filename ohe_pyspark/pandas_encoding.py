@@ -51,7 +51,7 @@ def one_hot_encode_dataframe(
             encoded_parts.append(preserved_column)
             continue
 
-        prefix = _singularize_column_name(column_name)
+        prefix = _normalize_category_name(column_name)
         series: pd.Series = dataframe.loc[:, column_name]
         category_names = sorted(
             {_normalize_category_name(value) for value in series if not pd.isna(value)}
@@ -81,17 +81,17 @@ def one_hot_encode_dataframe(
     return pd.concat(encoded_parts, axis=1)
 
 
-def _singularize_column_name(column_name: str) -> str:
-    normalized = _normalize_category_name(column_name)
-    if normalized.endswith("us"):
-        return normalized
-    if normalized.endswith("ies") and len(normalized) > 3:
-        return normalized[:-3] + "y"
-    if re.search(r"(xes|zes|ches|shes|sses|ses)$", normalized):
-        return normalized[:-2]
-    if normalized.endswith("s") and not normalized.endswith("ss"):
-        return normalized[:-1]
-    return normalized
+# def _singularize_column_name(column_name: str) -> str:
+#     normalized = _normalize_category_name(column_name)
+#     if normalized.endswith("us"):
+#         return normalized
+#     if normalized.endswith("ies") and len(normalized) > 3:
+#         return normalized[:-3] + "y"
+#     if re.search(r"(xes|zes|ches|shes|sses|ses)$", normalized):
+#         return normalized[:-2]
+#     if normalized.endswith("s") and not normalized.endswith("ss"):
+#         return normalized[:-1]
+#     return normalized
 
 
 def _normalize_category_name(value: object) -> str:
